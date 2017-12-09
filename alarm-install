@@ -96,6 +96,7 @@ for unit in dbus-org.freedesktop.network1.service systemd-networkd.service syste
             systemd-timesyncd.service; do
     find $MOUNT/etc/systemd/system -name $unit -print -delete
 done
+find $MOUNT/etc/systemd/system -type d -empty -print -delete
 
 # create empty resolv.conf
 info "fixing resolv.conf"
