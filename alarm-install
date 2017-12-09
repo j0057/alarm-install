@@ -130,11 +130,14 @@ EOF
     ln -s ../netctl@$profile.service $MOUNT/etc/systemd/system/multi-user.target.wants/netctl@$profile.service
 done
 
-# set sudoers
+# post-install:
 
+# set sudoers
+#info "allowing wheel users to use sudo"
+#echo '%wheel ALL=(ALL) NOPASSWD: ALL' > $MOUNT/etc/sudoers.d/wheel
+
+# update everything
 # fix packages with setcap
 # install and enable ntp
-
-
 # change alarm and root passwords
 # install some more packages
