@@ -1,0 +1,28 @@
+#!/bin/bash
+
+info() {
+    echo -e "\n\e[1;33m--> $1\e[0m"
+}
+
+error() {
+    echo -e "\e[1;31merror: $1\e[0m" >&2
+}
+
+# check for root
+if [ $(id -u) != 0 ]; then
+    error "must be root"
+    exit 255
+fi
+
+# update everything
+info "upgrading system and installing ifplugd, wpa_actiond and sudo"
+yes | pacman -Syu ifplugd wpa_actiond sudo
+
+# set sudoers
+info "allowing wheel users to use sudo"
+echo '%wheel ALL=(ALL) NOPASSWD: ALL' > $MOUNT/etc/sudoers.d/wheel
+
+# fix packages with setcap
+# install and enable ntp
+# change alarm and root passwords
+# install some more packages
