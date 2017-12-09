@@ -4,8 +4,38 @@ TARGET=${1:?Missing target disk}
 IMAGE=${2:?Missing version, such as ArchLinuxARM-rpi-latest.tar.gz or ArchLinuxARM-rpi-2-latest.tar.gz}
 
 info() {
-    echo -e "\e[1;33m--> $1\e[0m"
+    echo -e "\n\e[1;33m--> $1\e[0m"
 }
+
+error() {
+    echo -e "\e[1;31merror: $1\e[0m" >&2
+}
+
+# check for root
+if [ $(id -u) != 0 ]; then
+    error "must be root"
+    exit 255
+fi
+
+# check target device exists
+if ! lsblk $TARGET &> /dev/null; then
+    error "$TARGET does not seem to exist"
+    exit 255
+fi
+
+# check target device is not mounted
+if mount | grep -q $TARGET; then
+    error "$TARGET seems to be mounted"
+    exit 255
+fi
+
+# check we have everything
+for cmd in curl gpg mkfs.vfat; do
+    if ! type -p $cmd &> /dev/null; then
+        error "going to need $cmd, make sure it is installed"
+        exit 255
+    fi
+done
 
 if [ ! -f "$IMAGE" ]; then
     info "downloading $IMAGE..."
