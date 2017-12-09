@@ -131,6 +131,10 @@ EOF
     ln -s ../netctl@$profile.service $MOUNT/etc/systemd/system/multi-user.target.wants/netctl@$profile.service
 done
 
+# configure pacman
+info "configuring pacman"
+sed -i 's/\[options\]/[options]\nILoveCandy/' $MOUNT/etc/pacman.conf
+
 # install post-install script
 info "installing post-install script to $MOUNT/root"
 cp alarm-config $MOUNT/root
