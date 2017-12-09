@@ -1,0 +1,1 @@
+# ArchLinux ARM installer script
