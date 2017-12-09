@@ -2,6 +2,7 @@
 
 TARGET=${1:?Missing target disk}
 IMAGE=${2:?Missing version, such as ArchLinuxARM-rpi-latest.tar.gz or ArchLinuxARM-rpi-2-latest.tar.gz}
+MOUNT=/tmp/alarm
 
 info() {
     echo -e "\n\e[1;33m--> $1\e[0m"
@@ -64,7 +65,27 @@ fi
 # partition target device
 info "partitioning $TARGET"
 sfdisk $TARGET --delete || exit 5
-echo -e ",$[512*2048]b\n,,83" | sfdisk $TARGET || exit 6
+echo -e ",$[512*2048],b\n,,83" | sfdisk $TARGET || exit 6
+sleep 0.2 ; sync
+
+# format boot partition
+info "formatting boot partition"
+mkfs.vfat ${TARGET}1 -n boot || exit 7
+
+# format root partition
+info "formatting root partition"
+yes | mkfs.ext4 ${TARGET}2 -L root || exit 8
+
+# mount root and boot
+info "mounting $TARGET on $MOUNT"
+mkdir -p $MOUNT || exit 9
+mount ${TARGET}2 $MOUNT || exit 10
+mkdir -p $MOUNT/boot || exit 11
+mount ${TARGET}1 $MOUNT/boot || exit 12
+
+# extract image
+info "extracting $IMAGE to $MOUNT"
+bsdtar -xpf $IMAGE -C $MOUNT || true # spams errors about file flags...
 
 # disable systemd-{networkd,resolved,timesyncd}
 # create empty resolv.conf
