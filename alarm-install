@@ -39,6 +39,12 @@ for cmd in curl gpg mkfs.vfat; do
         exit 255
     fi
 done
+if [ "$CHROOT" = "1" ]; then
+    if ! type -p arch-chroot &> /dev/null; then
+        error "missing arch-chroot, please install arch-install-scripts"
+        exit 255
+    fi
+fi
 
 # download image
 if [ ! -f "$IMAGE" ]; then
@@ -138,6 +144,12 @@ sed -i 's/\[options\]/[options]\nILoveCandy/' $MOUNT/etc/pacman.conf
 # install post-install script
 info "installing post-install script to $MOUNT/root"
 cp alarm-config $MOUNT/root
+
+# run post-install script if so requested
+if [ "$CHROOT" = "1" ]; then
+    info "running post-install script in chroot"
+    arch-chroot $MOUNT /root/alarm-config
+fi
 
 # unmount target
 if [ "$UNMOUNT" != "0" ]; then
