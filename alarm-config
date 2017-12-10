@@ -21,8 +21,9 @@ yes | pacman -Syu ifplugd wpa_actiond sudo
 # reconfigure networks
 #find /etc/systemd/system -name 'netctl*' -print -delete
 for prof in /etc/netctl/*; do
-    info "disabling network profile $prof"
     if [ -f "$prof" ]; then
+        prof=$(basename $prof)
+        info "disabling network profile $prof"
         netctl disable $prof
     fi
 done
