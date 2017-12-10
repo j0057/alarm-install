@@ -28,7 +28,7 @@ for prof in /etc/netctl/*; do
     fi
 done
 for dev in /sys/class/net/*; do
-    dev=$(basename dev)
+    dev=$(basename $dev)
     info "enabling automatic for device $dev"
     case $dev in
         eth*)   systemctl enable netctl-ifplugd@$dev.service ;;
