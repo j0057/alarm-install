@@ -40,7 +40,10 @@ done
 info "allowing wheel users to use sudo"
 echo '%wheel ALL=(ALL) NOPASSWD: ALL' > $MOUNT/etc/sudoers.d/wheel
 
-# fix packages with setcap
+# fix packages with setcap - maybe this happens only when using tar instead of bsdtar?
+#info "reinstalling packages with binaries with missing capabilities"
+#yes | pacman -Sw $(pacman -Q | awk '{ print $1 }')
+
 # install and enable ntp
 info "installing ntp"
 yes | pacman -S ntp
