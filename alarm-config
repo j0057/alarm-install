@@ -18,6 +18,23 @@ fi
 info "upgrading system and installing ifplugd, wpa_actiond and sudo"
 yes | pacman -Syu ifplugd wpa_actiond sudo
 
+# reconfigure networks
+#find /etc/systemd/system -name 'netctl*' -print -delete
+for prof in /etc/netctl/*; do
+    info "disabling network profile $prof"
+    if [ -f "$prof" ]; then
+        netctl disable $prof
+    fi
+done
+for dev in /sys/class/net/*; do
+    dev=$(basename dev)
+    info "enabling automatic for device $dev"
+    case $dev in
+        eth*)   systemctl enable netctl-ifplugd@$dev.service ;;
+        wlan*)  systemctl enable netctl-auto@$dev.service ;;
+    esac
+done
+
 # set sudoers
 info "allowing wheel users to use sudo"
 echo '%wheel ALL=(ALL) NOPASSWD: ALL' > $MOUNT/etc/sudoers.d/wheel
