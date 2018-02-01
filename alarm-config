@@ -19,14 +19,7 @@ info "upgrading system and installing ifplugd, wpa_actiond and sudo"
 yes | pacman -Syu ifplugd wpa_actiond sudo
 
 # reconfigure networks
-#find /etc/systemd/system -name 'netctl*' -print -delete
-for prof in /etc/netctl/*; do
-    if [ -f "$prof" ]; then
-        prof=$(basename $prof)
-        info "disabling network profile $prof"
-        netctl disable $prof
-    fi
-done
+find /etc/systemd/system -name 'netctl*' -print -delete
 for dev in /sys/class/net/*; do
     dev=$(basename $dev)
     info "enabling automatic for device $dev"
