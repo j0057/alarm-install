@@ -103,6 +103,7 @@ for unit in dbus-org.freedesktop.network1.service systemd-networkd.service syste
     find $MOUNT/etc/systemd/system -name $unit -print -delete
 done
 find $MOUNT/etc/systemd/system -type d -empty -print -delete
+ln -sv /dev/null $MOUNT/etc/systemd/system/lvm2-lvmetad.service
 
 # create empty resolv.conf
 info "fixing resolv.conf"
