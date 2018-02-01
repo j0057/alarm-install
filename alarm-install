@@ -116,7 +116,7 @@ echo -n $HOSTNAMe > $MOUNT/etc/hostname
 
 # set timezone
 info "setting timezone to $TIMEZONE"
-ln -sf ../usr/share/zoneinfo/$TIMEZONE $MOUNT/etc/localtime
+ln -sfv ../usr/share/zoneinfo/$TIMEZONE $MOUNT/etc/localtime
 
 # set locale
 info "configuring locale"
@@ -126,7 +126,7 @@ echo 'LANG=en_US.UTF-8' > $MOUNT/etc/locale.conf
 # install and enable netctl profiles
 for profile in $(netctl list | cut -c 3-); do
     info "installing netctl profile $profile"
-    cp /etc/netctl/$profile $MOUNT/etc/netctl
+    cp -v /etc/netctl/$profile $MOUNT/etc/netctl
     dev=$(awk 'BEGIN { FS="=" }; /^Interface=/ { print $2 }' $MOUNT/etc/netctl/$profile)
     cat > $MOUNT/etc/systemd/system/netctl@$profile.service <<EOF
 .include /usr/lib/systemd/system/netctl@.service
@@ -135,7 +135,7 @@ for profile in $(netctl list | cut -c 3-); do
 BindsTo=sys-subsystem-net-devices-$dev.device
 After=sys-subsystem-net-devices-$dev.device
 EOF
-    ln -s ../netctl@$profile.service $MOUNT/etc/systemd/system/multi-user.target.wants/netctl@$profile.service
+    ln -sv ../netctl@$profile.service $MOUNT/etc/systemd/system/multi-user.target.wants/netctl@$profile.service
 done
 
 # configure pacman
@@ -144,7 +144,7 @@ sed -i 's/\[options\]/[options]\nILoveCandy/' $MOUNT/etc/pacman.conf
 
 # install post-install script
 info "installing post-install script to $MOUNT/root"
-cp alarm-config $MOUNT/root
+cp -v alarm-config $MOUNT/root
 
 # run post-install script if so requested
 if [ "$CHROOT" = "1" ]; then
