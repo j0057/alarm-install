@@ -159,6 +159,7 @@ if [ -f ~alarm/.ssh/authorized_keys ]; then
     chmod -v 700 $MOUNT/home/alarm/.ssh
     cp -v ~alarm/.ssh/authorized_keys $MOUNT/home/alarm/.ssh
     chmod -v 600 $MOUNT/home/alarm/.ssh/authorized_keys
+    chown -Rv alarm.alarm $MOUNT/home/alarm/.ssh
     sed -i 's/#\(PasswordAuthentication\) .*$/\1 no/' $MOUNT/etc/ssh/sshd_config
 fi
 
