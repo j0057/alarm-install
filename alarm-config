@@ -54,3 +54,7 @@ yes | pacman -S \
     strace \
     tmux \
     vim
+
+# set $EDITOR to vim as god intended
+info "configuring editor"
+echo 'export EDITOR=vim' > /etc/profile.d/editor.sh
