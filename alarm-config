@@ -47,4 +47,10 @@ systemctl enable --now ntpd
 
 # install some more packages
 info "installing some more packages"
-yes | pacman -S htop lsof strace mc
+yes | pacman -S \
+    htop \
+    lsof \
+    mc \
+    strace \
+    tmux \
+    vim
